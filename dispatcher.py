@@ -1,6 +1,7 @@
 import logging
 from aiogram import Bot, Dispatcher
 from filters import IsOwnerFilter, IsAdminFilter, MemberCanRestrictFilter
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
 import config
 
 # Configure logging
@@ -12,7 +13,10 @@ if not config.BOT_TOKEN:
 
 # init
 bot = Bot(token=config.BOT_TOKEN, parse_mode="HTML")
-dp = Dispatcher(bot)
+storage = MemoryStorage()
+dp = Dispatcher(bot, storage=storage)
+# storage = RedisStorage2('localhost', 6379, db=5, pool_size=10, prefix='my_fsm_key')
+# storage = MongoStorage(host='localhost', port=27017, db_name='aiogram_fsm')
 
 # activate filters
 
