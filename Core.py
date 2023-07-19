@@ -62,14 +62,14 @@ class commands:
         if message.text == "#":
             await message.answer("Отправка сообщений отменена.")
             await state.set_state(ClientState.END)
-        elif message.text is not None:
-            chat_name = await others.get_chat_name(chat_id)
-            if message.content_type == types.ContentType.TEXT:
-                await message.answer(f"Текстовое сообщение отправлено в {chat_name}")
-                await bot.send_message(chat_id=chat_id, text=message.text)
-            elif message.content_type == types.ContentType.STICKER:
-                await message.answer(f"Стикер отправлен в {chat_name}")
-                await bot.send_sticker(chat_id=chat_id, sticker=message.sticker.file_id)
+        async with state.proxy() as data: chat_id = data.get('chat_id')
+        chat_name = await others.get_chat_name(chat_id)
+        if message.content_type == types.ContentType.TEXT:
+            await message.answer(f"Текстовое сообщение отправлено в {chat_name}")
+            await bot.send_message(chat_id=chat_id, text=message.text)
+        elif message.content_type == types.ContentType.STICKER:
+            await message.answer(f"Стикер отправлен в {chat_name}")
+            await bot.send_sticker(chat_id=chat_id, sticker=message.sticker.file_id)
               
     @dp.message_handler(is_owner=True,commands=("del","d","delete"),commands_prefix=(".","\\","/"))   
     async def msg_del(message: types.Message):
